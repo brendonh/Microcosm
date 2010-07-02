@@ -1,0 +1,7 @@
+env = Environment()
+
+env.Append(CPPPATH = ['include/'])
+env.Append(LIBS = ['sfml-graphics', 'sfml-window', 'sfml-system'])
+
+env.Program(target='bin/microcosm', source=[Glob('src/*.cpp')])
+
