@@ -27,16 +27,11 @@ void Game::mainloop() {
 
     handleEvents();
 
-    int iterations = 0;
-
     while(unrenderedTime > timeStep) {
-      iterations++;
+      pb->update();
       world->Step(timeStep, 10, 10);
       unrenderedTime -= timeStep;
     }
-
-    pb->update();
-    stat->update();
 
     glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
@@ -59,7 +54,7 @@ void Game::mainloop() {
 void Game::initSFML() {
   if (fullscreen) {
     sf::VideoMode vm = sf::VideoMode::GetDesktopMode();
-    window = new sf::RenderWindow(vm, "Box2D Sandbox", sf::Style::Fullscreen);
+    window = new sf::RenderWindow(vm, "Box2D Sandbox", sf::Style::None);
   } else {
     window = new sf::RenderWindow(sf::VideoMode(800, 600, 32), "Box2D Sandbox");
   }
@@ -104,29 +99,21 @@ void Game::handleEvents() {
   while (window->GetEvent(Event)) {
     if (Event.Type == sf::Event::Closed)
       window->Close();
-    if (Event.Type == sf::Event::KeyPressed && Event.Key.Code == sf::Key::Escape)
-      window->Close();
 
-    if (Event.Type == sf::Event::KeyPressed && Event.Key.Code == sf::Key::Down)
-      pb->brake(true);
-
-    if (Event.Type == sf::Event::KeyReleased && Event.Key.Code == sf::Key::Down)
-      pb->brake(false);
+    if (Event.Type == sf::Event::KeyPressed || Event.Type == sf::Event::KeyReleased) {
+      switch(Event.Key.Code) {
+      case sf::Key::Escape:
+        window->Close(); 
+        break;
+      }
+    }
   }
 
   const sf::Input& Input = window->GetInput();
-  if (Input.IsKeyDown(sf::Key::Up)) pb->thrust();
 
-  bool turning = false;
-  if (Input.IsKeyDown(sf::Key::Right)) {
-    turning = !turning;
-    pb->turn(-1);
-  }
+  pb->setState(SHIP_THRUST,     Input.IsKeyDown(sf::Key::Up));
+  pb->setState(SHIP_BRAKE,      Input.IsKeyDown(sf::Key::Down));
+  pb->setState(SHIP_TURN_LEFT,  Input.IsKeyDown(sf::Key::Left));    
+  pb->setState(SHIP_TURN_RIGHT, Input.IsKeyDown(sf::Key::Right));
   
-  if (Input.IsKeyDown(sf::Key::Left)) {
-    turning = !turning;
-    pb->turn(1);
-  }
-
-  if (!turning) pb->stopTurn();
 }
