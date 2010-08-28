@@ -14,9 +14,22 @@ namespace Microcosm {
     SHIP_TURN_RIGHT = 3
   };
 
-  class PushBox {
+  class Ship {
   public:
+    Ship(b2World* world, float x, float y);
 
+    void setState(int s, bool v);
+
+    bool getState(int s);
+    void setState(int s);
+    void clearState(int s);
+
+    void update();
+    void render();
+
+    float getSpeed();
+
+  private:
     b2World* world;
     b2Body*  body;
 
@@ -33,33 +46,23 @@ namespace Microcosm {
 
     bool engine;
 
-    PushBox(b2World* world, float x, float y);
-
-    void setState(int s, bool v);
-
-    bool getState(int s);
-    void setState(int s);
-    void clearState(int s);
+    void init();
 
     void thrust();
     void turn(int dir);
     void brake();
-
     void stopTurn();
-
-    void update();
-    void render();
 
   };
 
-  inline void PushBox::setState(int s, bool v) {
+  inline void Ship::setState(int s, bool v) {
     if (v) setState(s);
     else clearState(s);
   }
 
-  inline bool PushBox::getState(int s) { return state & (1 << s); }
-  inline void PushBox::setState(int s) { state |= (1 << s); }
-  inline void PushBox::clearState(int s) { state &= ~(1 << s); }
+  inline bool Ship::getState(int s) { return state & (1 << s); }
+  inline void Ship::setState(int s) { state |= (1 << s); }
+  inline void Ship::clearState(int s) { state &= ~(1 << s); }
 
 }
 #endif

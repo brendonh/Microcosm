@@ -8,12 +8,19 @@
 
 #include <Box2D/Box2D.h>
 
-#include "pushbox.hpp"
+#include "ship.hpp"
 
 namespace Microcosm {
 
   class Game {
   public:
+
+    Game(bool f);
+    ~Game();
+
+    void mainloop();
+
+  private:
 
     bool fullscreen;
 
@@ -26,14 +33,10 @@ namespace Microcosm {
 
     b2World *world;
 
-    PushBox* pb;
-    PushBox* stat;
-
-    Game(bool f);
-    ~Game();
+    Ship* pb;
+    Ship* stat;
 
     void init();
-    void mainloop();
 
     void initOpenGL();
     void initSFML();

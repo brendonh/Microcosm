@@ -2,7 +2,7 @@
 
 #include <GL/gl.h>
 
-#include "pushbox.hpp"
+#include "ship.hpp"
 
 using namespace Microcosm;
 
@@ -14,20 +14,23 @@ inline float vec2rad(b2Vec2 v) {
    return atan2(v.y, v.x);
 }
 
-PushBox::PushBox(b2World* world, float x, float y) 
+Ship::Ship(b2World* world, float x, float y) 
   : world(world),
     mainThrust(200.0f),
-    turnThrust(100000.0f) { 
-
-  maxSpeed = 80;
+    turnThrust(100000.0f),
+    maxSpeed(80) { 
 
   position.x = x;
   position.y = y;
   angle = 90 * DEG2RAD;
 
+  init();
+}
+
+void Ship::init() {
   b2BodyDef *bodyDef = new b2BodyDef();
   bodyDef->type = b2_dynamicBody;
-  bodyDef->position.Set(x, y);
+  bodyDef->position.Set(position.x, position.y);
   bodyDef->angle = angle;
 
   bodyDef->linearDamping = 0;
@@ -44,10 +47,9 @@ PushBox::PushBox(b2World* world, float x, float y)
   body->CreateFixture(fixtureDef);
 
   mainThrust /= body->GetMass();
-
 }
 
-void PushBox::update() {
+void Ship::update() {
 
   engine = false;
 
@@ -60,13 +62,13 @@ void PushBox::update() {
 
 }
 
-void PushBox::thrust() {
+void Ship::thrust() {
   engine = true;
   b2Vec2 force = rad2vec(angle);
   force *= mainThrust;
   b2Vec2 vel = body->GetLinearVelocity();
   b2Vec2 newVel = vel + force;
-    
+
   if (newVel.Length() > vel.Length()) {
     float b = 1 - vel.LengthSquared() / (maxSpeed*maxSpeed);
     if (b <= 0) b = 0;
@@ -86,13 +88,13 @@ void PushBox::thrust() {
   body->SetLinearVelocity(vel);
 }
 
-void PushBox::turn(int dir) {
+void Ship::turn(int dir) {
   float vel = body->GetAngularVelocity();
   float force = turnThrust * (1 - (fabs(vel) / PI));
   body->ApplyTorque(dir * force);
 }
 
-void PushBox::stopTurn() {
+void Ship::stopTurn() {
   float vel = body->GetAngularVelocity();
   if (fabs(vel) < 0.05) {
     body->SetAngularVelocity(0);
@@ -103,7 +105,7 @@ void PushBox::stopTurn() {
   return;
 }
 
-void PushBox::brake() {
+void Ship::brake() {
   b2Vec2 vel = body->GetLinearVelocity();
   if (!vel.Length()) return;
 
@@ -128,7 +130,7 @@ void PushBox::brake() {
   body->SetAngularVelocity(mod);
 }
 
-void PushBox::render() {
+void Ship::render() {
   position = body->GetPosition();
   angle = body->GetAngle();
 
@@ -143,4 +145,9 @@ void PushBox::render() {
   glVertex3f( 10.f,  7.f, 0);
   glVertex3f( 10.f, -7.f, 0);
   glEnd();
+}
+
+
+float Ship::getSpeed() {
+  return body->GetLinearVelocity().Length();
 }

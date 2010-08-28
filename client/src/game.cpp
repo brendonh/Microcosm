@@ -38,7 +38,7 @@ void Game::mainloop() {
     window->SaveGLStates();
 
     char msg[50];
-    sprintf(msg, "Speed: %.2f", pb->body->GetLinearVelocity().Length());
+    sprintf(msg, "Speed: %.0f", pb->getSpeed());
 
     speed->SetString(msg);
     window->Draw(*speed);
@@ -60,7 +60,7 @@ void Game::initSFML() {
   }
 
   window->UseVerticalSync(true);
-  window->SetFramerateLimit(100);
+  window->SetFramerateLimit(60);
 
   clock = new sf::Clock();
 
@@ -89,8 +89,8 @@ void Game::initBox2D() {
   b2Vec2 gravity(0.0f, 0.0f);
   world = new b2World(gravity, true);
 
-  pb = new PushBox(world, 0, 0);
-  stat = new PushBox(world, -18, 50);
+  pb = new Ship(world, 0, 0);
+  stat = new Ship(world, -18, 50);
 }
 
 
