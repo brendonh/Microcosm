@@ -33,20 +33,7 @@ void Game::mainloop() {
       unrenderedTime -= timeStep;
     }
 
-    glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
-
-    window->SaveGLStates();
-
-    char msg[50];
-    sprintf(msg, "Speed: %.0f", pb->getSpeed());
-
-    speed->SetString(msg);
-    window->Draw(*speed);
-    window->RestoreGLStates();
-
-    pb->render();
-    stat->render();
-
+    renderTo(window);
     window->Display();
   }
 }
@@ -100,11 +87,17 @@ void Game::handleEvents() {
     if (Event.Type == sf::Event::Closed)
       window->Close();
 
-    if (Event.Type == sf::Event::KeyPressed || Event.Type == sf::Event::KeyReleased) {
+    if (Event.Type == sf::Event::KeyPressed) {
       switch(Event.Key.Code) {
       case sf::Key::Escape:
         window->Close(); 
         break;
+
+      case sf::Key::F1:
+        screenshot();
+        break;
+
+      default: break;
       }
     }
   }
@@ -116,4 +109,35 @@ void Game::handleEvents() {
   pb->setState(SHIP_TURN_LEFT,  Input.IsKeyDown(sf::Key::Left));    
   pb->setState(SHIP_TURN_RIGHT, Input.IsKeyDown(sf::Key::Right));
   
+}
+
+void Game::renderTo(sf::RenderTarget *target) {
+  glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
+
+  target->SaveGLStates();
+
+  char msg[50];
+  sprintf(msg, "Speed: %.0f", pb->getSpeed());
+
+  speed->SetString(msg);
+  target->Draw(*speed);
+  target->RestoreGLStates();
+
+  pb->render();
+  stat->render();
+  
+}
+
+/* Not actually working. */
+void Game::screenshot() {
+  sf::RenderImage *image = new sf::RenderImage();
+  if (!image->Create(window->GetWidth(), window->GetHeight())) {
+    printf("Image not available\n");
+    return;
+  }
+  image->SetActive(true);
+  renderTo(image);
+  image->Display();
+  image->GetImage().SaveToFile("screenshot.jpg");
+  printf("Done.\n");
 }

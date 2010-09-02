@@ -19,6 +19,7 @@ namespace Microcosm {
     ~Game();
 
     void mainloop();
+    void screenshot();
 
   private:
 
@@ -44,6 +45,7 @@ namespace Microcosm {
 
     void handleEvents();
 
+    void renderTo(sf::RenderTarget *target);
   };
 
 

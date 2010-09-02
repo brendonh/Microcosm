@@ -1,1 +1,9 @@
 Lunacy!
+
+
+BUILDING
+========
+
+cd build/client
+cmake ../../client
+make

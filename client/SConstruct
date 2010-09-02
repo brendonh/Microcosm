@@ -1,7 +1,0 @@
-env = Environment()
-
-env.Append(CPPPATH = ['include/'])
-env.Append(LIBS = ['sfml2-graphics', 'sfml2-window', 'sfml2-system', 'GL', 'Box2D'])
-
-env.Program(target='bin/microcosm', source=[Glob('src/*.cpp')])
-
