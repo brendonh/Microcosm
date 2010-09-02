@@ -4,6 +4,7 @@ Lunacy!
 BUILDING
 ========
 
-cd build/client
-cmake ../../client
+mkdir build
+cd build
+cmake ../client
 make
