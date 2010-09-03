@@ -3,12 +3,9 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <GL/gl.h>
-#include <GL/glu.h>
-
 #include <Box2D/Box2D.h>
 
-#include "ship.hpp"
+#include "ships/Ship.hpp"
 
 namespace Microcosm {
 
@@ -21,11 +18,12 @@ namespace Microcosm {
     void mainloop();
     void screenshot();
 
+    float timeStep;
+
   private:
 
     bool fullscreen;
 
-    float timeStep;
     float unrenderedTime;
 
     sf::RenderWindow* window;
@@ -34,8 +32,8 @@ namespace Microcosm {
 
     b2World *world;
 
-    Ship* pb;
-    Ship* stat;
+    Ships::Ship* pb;
+    Ships::Ship* stat;
 
     void init();
 

@@ -10,8 +10,8 @@ find_package(Box2D REQUIRED)
 include_directories(${Box2D_INCLUDE_DIRS})
 set(LIBS ${LIBS} Box2D)
 
-file(GLOB MicrocosmClient_SOURCES "${MicrocosmClient_SOURCE_DIR}/src/*.cpp")
-include_directories(MicrocosmClient include)
+file(GLOB_RECURSE MicrocosmClient_SOURCES "${MicrocosmClient_SOURCE_DIR}/src/*.cpp")
+include_directories("src")
 
 add_definitions(-Wall -Wextra -pedantic -Werror)
 

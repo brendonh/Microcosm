@@ -1,11 +1,18 @@
 #include<stdio.h>
 
-#include "microcosm.hpp"
-#include "game.hpp"
+#include <GL/gl.h>
+#include <GL/glu.h>
+
+#include "common/Microcosm.hpp"
+#include "Game.hpp"
+
 
 using namespace Microcosm;
 
-Game::Game(bool f) : fullscreen(f) { 
+
+
+Game::Game(bool f)
+  : fullscreen(f) { 
   timeStep = 1.0f / 60.0f;
   unrenderedTime = 0;
   init(); 
@@ -28,7 +35,7 @@ void Game::mainloop() {
     handleEvents();
 
     while(unrenderedTime > timeStep) {
-      pb->update();
+      pb->tick();
       world->Step(timeStep, 10, 10);
       unrenderedTime -= timeStep;
     }
@@ -76,8 +83,11 @@ void Game::initBox2D() {
   b2Vec2 gravity(0.0f, 0.0f);
   world = new b2World(gravity, true);
 
-  pb = new Ship(world, 0, 0);
-  stat = new Ship(world, -18, 50);
+  pb = new Ships::Ship();
+  pb->Init(world, b2Vec2(0, 0), PI / 2);
+
+  stat = new Ships::Ship();
+  stat->Init(world, b2Vec2(-18, 50), 0.f);
 }
 
 
@@ -103,11 +113,7 @@ void Game::handleEvents() {
   }
 
   const sf::Input& Input = window->GetInput();
-
-  pb->setState(SHIP_THRUST,     Input.IsKeyDown(sf::Key::Up));
-  pb->setState(SHIP_BRAKE,      Input.IsKeyDown(sf::Key::Down));
-  pb->setState(SHIP_TURN_LEFT,  Input.IsKeyDown(sf::Key::Left));    
-  pb->setState(SHIP_TURN_RIGHT, Input.IsKeyDown(sf::Key::Right));
+  pb->handleInput(Input);
   
 }
 
@@ -117,6 +123,7 @@ void Game::renderTo(sf::RenderTarget *target) {
   target->SaveGLStates();
 
   char msg[50];
+  sprintf(msg, "Speed: ???");
   sprintf(msg, "Speed: %.0f", pb->getSpeed());
 
   speed->SetString(msg);
