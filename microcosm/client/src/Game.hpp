@@ -5,7 +5,7 @@
 
 #include <Box2D/Box2D.h>
 
-#include "ships/Ship.hpp"
+#include "ships/ClientShip.hpp"
 
 namespace Microcosm {
 
@@ -28,12 +28,13 @@ namespace Microcosm {
 
     sf::RenderWindow* window;
     sf::Clock* clock;
-    sf::Text* speed;
+
+    sf::String* speed;
 
     b2World *world;
 
-    Ships::Ship* pb;
-    Ships::Ship* stat;
+    Ships::ClientShip* pb;
+    Ships::ClientShip* stat;
 
     void init();
 

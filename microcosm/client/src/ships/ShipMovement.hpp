@@ -29,12 +29,18 @@ namespace Microcosm {
 
       ShipMovement(Ship* obj);
 
-      void handleInput(const sf::Input& Input);
       void tick();
 
       uint32_t mState;
 
       bool getState(int s) { return mState & (1 << s); }
+      void setState(int s) { mState |= (1 << s); }
+      void clearState(int s) { mState &= ~(1 << s); }
+      
+      void setState(int s, bool v) {
+        if (v) setState(s);
+        else clearState(s);
+      }
 
     private:
 
@@ -46,14 +52,6 @@ namespace Microcosm {
       void turn(int dir);
       void stopTurn();
       void brake();
-
-      void setState(int s) { mState |= (1 << s); }
-      void clearState(int s) { mState &= ~(1 << s); }
-      
-      void setState(int s, bool v) {
-        if (v) setState(s);
-        else clearState(s);
-      }
 
     };
 

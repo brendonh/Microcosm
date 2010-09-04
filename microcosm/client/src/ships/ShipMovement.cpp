@@ -24,14 +24,6 @@ void ShipMovement::tick() {
   else stopTurn();
 }
 
-#include <stdio.h>
-void ShipMovement::handleInput(const sf::Input& Input) {
-  setState(SHIP_THRUST,     Input.IsKeyDown(sf::Key::Up));
-  setState(SHIP_BRAKE,      Input.IsKeyDown(sf::Key::Down));
-  setState(SHIP_TURN_LEFT,  Input.IsKeyDown(sf::Key::Left));    
-  setState(SHIP_TURN_RIGHT, Input.IsKeyDown(sf::Key::Right));
-}
-
 
 void ShipMovement::thrust() {
   mObj->mEngineOn = true;
@@ -81,6 +73,7 @@ void ShipMovement::stopTurn() {
   return;
 }
 
+
 void ShipMovement::brake() {
   b2Body* body = mObj->mBody;
   b2Vec2 vel = body->GetLinearVelocity();
@@ -89,6 +82,9 @@ void ShipMovement::brake() {
   float angle = body->GetAngle();
   float wantAngle = vec2rad(-vel);
   float diff = wantAngle - angle;
+
+  if (diff > PI) diff -= TWOPI;
+  while (diff < -PI) diff += TWOPI;
 
   if (fabs(diff) < 0.01) {
     body->SetAngularVelocity(0);

@@ -18,13 +18,6 @@ namespace Microcosm {
       
       WorldObject() {};
 
-      virtual void render() = 0;
-
-      virtual void handleInput(const sf::Input& Input) = 0;
-
-      // Later
-      // virtual void handleNetwork() = 0;
-
       void tick() {
         ListenerList::const_iterator i;
         for (i = mTickListeners.begin(); i != mTickListeners.end(); ++i) {

@@ -12,30 +12,25 @@
 
 
 namespace Microcosm {
-  
+
   namespace Ships {
 
     class Ship : public Microcosm::Framework::WorldObject {
     public:
-      
+
       Ship();
       ~Ship();
 
       void Init(b2World* world, b2Vec2 position, float angle);
 
-      void render();
-      void handleInput(const sf::Input& Input);
+      b2Body*  mBody;
+      ShipMovement* mMovement;
 
-      float getSpeed();
+      bool mEngineOn;
 
     private:
 
-      friend class ShipMovement;
-
-      b2Body*  mBody;
-      bool mEngineOn;
-
-      ShipMovement* mMovement;
+      void cleanup();
 
     };
 
