@@ -4,7 +4,10 @@ Lunacy!
 BUILDING
 ========
 
+Build reckoner and run "make install" to put a build/dist/ directory together, and then:
+
+ln -s <reckoner_path>/build/dist reckoner
 mkdir build
 cd build
 cmake ../client
-make
+make install

@@ -1,7 +1,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "ships/ClientShip.hpp"
+#include "./ClientShip.hpp"
+#include "../Microcosm.hpp"
 
 using namespace Microcosm::Ships;
 

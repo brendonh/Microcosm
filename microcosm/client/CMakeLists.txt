@@ -11,11 +11,14 @@ set(LIBS ${LIBS} Box2D)
 
 set(LIBS ${LIBS} GLU)
 
+set(LIBS ${LIBS} reckoner-common)
+
 file(GLOB_RECURSE MicrocosmClient_SOURCES "${MicrocosmClient_SOURCE_DIR}/src/*.cpp")
 include_directories("src")
 
 add_definitions(-Wall -Wextra -pedantic -Werror)
 
-
 add_executable(Microcosm ${MicrocosmClient_SOURCES})
 target_link_libraries(Microcosm ${LIBS})
+
+install(TARGETS Microcosm RUNTIME DESTINATION "bin")

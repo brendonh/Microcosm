@@ -3,7 +3,7 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "common/Microcosm.hpp"
+#include "Microcosm.hpp"
 #include "Game.hpp"
 
 
