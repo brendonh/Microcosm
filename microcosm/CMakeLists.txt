@@ -16,4 +16,5 @@ link_directories("${RECKONER_DIR}/lib")
 set(CMAKE_INSTALL_PREFIX "dist")
 set(CMAKE_INSTALL_RPATH "${RECKONER_DIR}/lib")
 
+subdirs(common)
 subdirs(client)

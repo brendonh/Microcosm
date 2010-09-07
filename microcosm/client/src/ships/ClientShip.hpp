@@ -2,7 +2,7 @@
 #ifndef __MICROCOSM_SHIPS_CLIENTSHIP
 #define __MICROCOSM_SHIPS_CLIENTSHIP
 
-#include "reckoner/common/ships/Ship.hpp"
+#include "ships/Ship.hpp"
 
 
 namespace Microcosm {
