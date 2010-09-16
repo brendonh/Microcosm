@@ -2,7 +2,7 @@
 #ifndef __MICROCOSM_SHIPS_CLIENTSHIP
 #define __MICROCOSM_SHIPS_CLIENTSHIP
 
-#include "ships/Ship.hpp"
+#include "microcosm/common/ships/Ship.hpp"
 
 
 namespace Microcosm {
@@ -11,10 +11,8 @@ namespace Microcosm {
     class ClientShip {
     public:
 
-      ClientShip();
+      ClientShip(b2World* world, b2Vec2 position, float angle);
       ~ClientShip();
-
-      void Init(b2World* world, b2Vec2 position, float angle);
 
       void tick() { mShip->tick(); }
 

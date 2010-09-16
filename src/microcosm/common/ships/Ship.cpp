@@ -2,25 +2,10 @@
 
 using namespace Microcosm::Ships;
 
-Ship::Ship() : mBody(NULL), mMovement(NULL), mEngineOn(false) {}
-
-Ship::~Ship() {
-  cleanup();
-}
-
-void Ship::cleanup() {
-  if (mBody) {
-    mBody->GetWorld()->DestroyBody(mBody);
-    mBody = NULL;
-  }
-  if (mMovement) {
-    delete mMovement;
-    mMovement = NULL;
-  }
-}
-
-void Ship::Init(b2World* world, b2Vec2 position, float angle) {
-  cleanup();
+Ship::Ship(b2World* world, b2Vec2 position, float angle)
+  : Reckoner::Framework::WorldObject(),
+    mMovement(NULL), 
+    mEngineOn(false) {
 
   b2BodyDef *bodyDef = new b2BodyDef();
   bodyDef->type = b2_dynamicBody;
@@ -30,7 +15,7 @@ void Ship::Init(b2World* world, b2Vec2 position, float angle) {
   bodyDef->linearDamping = 0;
   bodyDef->angularDamping = 0;
       
-  mBody = world->CreateBody(bodyDef);
+  b2Body* body = world->CreateBody(bodyDef);
   b2PolygonShape *dynamicBox = new b2PolygonShape();
   dynamicBox->SetAsBox(10.f, 10.f);
 
@@ -38,10 +23,16 @@ void Ship::Init(b2World* world, b2Vec2 position, float angle) {
   fixtureDef->shape = dynamicBox;
   fixtureDef->density = 1.0f;
       
-  mBody->CreateFixture(fixtureDef);
+  body->CreateFixture(fixtureDef);
+
+  setBody(body);
 
   // XXX TODO: Something more abstract?
   mMovement = new ShipMovement(this);
   mTickListeners.push_back(mMovement);
 }
 
+Ship::~Ship() {
+  mBody->GetWorld()->DestroyBody(mBody);
+  delete mMovement;
+}

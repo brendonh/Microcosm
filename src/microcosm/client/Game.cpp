@@ -10,7 +10,6 @@
 using namespace Microcosm;
 
 
-
 Game::Game(bool f)
   : fullscreen(f),
     window(NULL), clock(NULL),
@@ -87,11 +86,9 @@ void Game::initBox2D() {
   b2Vec2 gravity(0.0f, 0.0f);
   world = new b2World(gravity, true);
 
-  pb = new Ships::ClientShip();
-  pb->Init(world, b2Vec2(0, 0), PI / 2);
+  pb = new Ships::ClientShip(world, b2Vec2(0, 0), PI / 2);
 
-  stat = new Ships::ClientShip();
-  stat->Init(world, b2Vec2(-18, 50), 0.f);
+  stat = new Ships::ClientShip(world, b2Vec2(-18, 50), 0.f);
 }
 
 
@@ -125,7 +122,6 @@ void Game::renderTo(sf::RenderTarget *target) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   char msg[50];
-  sprintf(msg, "Speed: ???");
   sprintf(msg, "Speed: %.0f", pb->getSpeed());
 
   if (speed) {

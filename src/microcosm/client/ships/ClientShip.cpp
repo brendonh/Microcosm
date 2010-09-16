@@ -6,19 +6,14 @@
 
 using namespace Microcosm::Ships;
 
-ClientShip::ClientShip() {
-  mShip = new Ship();
+ClientShip::ClientShip(b2World* world, b2Vec2 position, float angle) {
+  mShip = new Ship(world, position, angle);
 }
 
 ClientShip::~ClientShip() {
   delete mShip;
 }
 
-
-void ClientShip::Init(b2World* world, b2Vec2 position, float angle) {
-  mShip->Init(world, position, angle);
-
-}
 
 float ClientShip::getSpeed() {
   return mShip->mBody->GetLinearVelocity().Length();

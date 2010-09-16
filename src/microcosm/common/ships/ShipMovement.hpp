@@ -21,7 +21,7 @@ namespace Microcosm {
       SHIP_TURN_RIGHT = 3
     };
 
-    class ShipMovement : public Microcosm::Framework::TickListener {
+    class ShipMovement : public Reckoner::Framework::TickListener {
     private:
       Ship* mObj;
 
