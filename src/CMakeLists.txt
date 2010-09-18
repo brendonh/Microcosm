@@ -1,10 +1,31 @@
 cmake_minimum_required (VERSION 2.8)
 project (Microcosm)
 
-set(RECKONER_DIR "${CMAKE_BINARY_DIR}/../reckoner")
-
 set(CMAKE_MODULE_PATH "${Microcosm_SOURCE_DIR}/../cmake/modules" ${CMAKE_MODULE_PATH})
-set(CMAKE_MODULE_PATH "${RECKONER_DIR}/share/cmake/modules" ${CMAKE_MODULE_PATH})
+
+
+# When using reckoner's install
+# set(RECKONER_DIR "${CMAKE_BINARY_DIR}/../reckoner")
+# set(CMAKE_MODULE_PATH "${RECKONER_DIR}/share/cmake/modules" ${CMAKE_MODULE_PATH})
+# include_directories("${RECKONER_DIR}/include")
+# link_directories("${RECKONER_DIR}/lib")
+
+# For now
+set(RECKONER_BASE_DIR "${CMAKE_BINARY_DIR}/../../reckoner")
+set(RECKONER_PROTO_DIR "${RECKONER_BASE_DIR}/src/reckoner/proto")
+set(RECKONER_PROTO_BIN_DIR "${RECKONER_BASE_DIR}/build/reckoner/proto")
+set(CMAKE_MODULE_PATH "${RECKONER_BASE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+include_directories("${RECKONER_BASE_DIR}/src")
+include_directories("${RECKONER_BASE_DIR}/build")
+link_directories("${RECKONER_BASE_DIR}/build/reckoner/common")
+link_directories("${RECKONER_BASE_DIR}/build/reckoner/server")
+add_library(reckoner-common STATIC IMPORTED)
+set_property(TARGET reckoner-common PROPERTY
+  IMPORTED_LOCATION "${RECKONER_BASE_DIR}/build/reckoner/common/libreckoner-common.a")
+add_library(reckoner-server STATIC IMPORTED)
+set_property(TARGET reckoner-server PROPERTY
+  IMPORTED_LOCATION "${RECKONER_BASE_DIR}/build/reckoner/server/libreckoner-server.a")
+
 
 include(MacroOutOfSourceBuild)
 macro_ensure_out_of_source_build("${PROJECT_NAME} requires an out of source build.")
@@ -29,6 +50,9 @@ set(LIBS ${LIBS} pthread ${PROTOBUF_LIBRARY})
 include_directories(${Microcosm_SOURCE_DIR})
 
 set(CMAKE_INSTALL_PREFIX "dist")
+
+set(CMAKE_CXX_COMPILER c++)
+add_definitions(-std=c++0x -Wall -Wextra -pedantic -Werror -Winline)
 
 add_subdirectory("microcosm/common")
 add_subdirectory("microcosm/client")

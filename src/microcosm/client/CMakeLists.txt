@@ -11,8 +11,6 @@ set(LIBS ${LIBS} microcosm-common)
 
 file(GLOB_RECURSE MicrocosmClient_SOURCES "${MicrocosmClient_SOURCE_DIR}/*.cpp")
 
-add_definitions(-Wall -Wextra -pedantic -Werror)
-
 add_executable(Microcosm ${MicrocosmClient_SOURCES} ${MicrocosmCommon_SOURCES})
 target_link_libraries(Microcosm ${LIBS})
 
