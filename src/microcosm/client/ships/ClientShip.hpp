@@ -11,10 +11,10 @@ namespace Microcosm {
     class ClientShip {
     public:
 
-      ClientShip(b2World* world, b2Vec2 position, float angle);
+      ClientShip(Ship& ship); //b2World& world, b2Vec2 position, float angle);
       ~ClientShip();
 
-      void tick() { mShip->tick(); }
+      void tick() { mShip.tick(); }
 
       void render();
       void handleInput(const sf::Input& Input);
@@ -23,7 +23,7 @@ namespace Microcosm {
 
     private:
 
-      Ship* mShip;
+      Ship& mShip;
 
     };
 

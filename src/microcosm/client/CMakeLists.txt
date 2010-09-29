@@ -2,7 +2,8 @@ cmake_minimum_required (VERSION 2.8)
 project (MicrocosmClient)
 
 find_package(SFML REQUIRED COMPONENTS System Window Graphics)
-include_directories(${SFML_INCLUDE_DIRS})
+
+include_directories(${SFML_INCLUDE_DIR})
 set(LIBS ${LIBS} ${SFML_LIBRARY})
 
 set(LIBS ${LIBS} GLU)

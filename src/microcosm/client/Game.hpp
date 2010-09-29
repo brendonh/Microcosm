@@ -12,7 +12,7 @@ namespace Microcosm {
   class Game {
   public:
 
-    Game(bool f);
+    Game(bool fullscreen);
     ~Game();
 
     void mainloop();
@@ -31,7 +31,7 @@ namespace Microcosm {
 
     sf::String* speed;
 
-    b2World *world;
+    b2World mWorld;
 
     Ships::ClientShip* pb;
     Ships::ClientShip* stat;

@@ -27,11 +27,11 @@ void ShipMovement::tick() {
 
 void ShipMovement::thrust() {
   mObj->mEngineOn = true;
-  b2Body* body = mObj->mBody;
+  b2Body& body = mObj->mBody;
 
-  b2Vec2 force = rad2vec(body->GetAngle());
-  force *= mMainThrust / body->GetMass();
-  b2Vec2 vel = body->GetLinearVelocity();
+  b2Vec2 force = rad2vec(body.GetAngle());
+  force *= mMainThrust / body.GetMass();
+  b2Vec2 vel = body.GetLinearVelocity();
 
   b2Vec2 newVel = vel + force;
 
@@ -51,35 +51,35 @@ void ShipMovement::thrust() {
     vel = newVel;
   }
 
-  body->SetLinearVelocity(vel);
+  body.SetLinearVelocity(vel);
 }
 
 void ShipMovement::turn(int dir) {
-  b2Body* body = mObj->mBody;
-  float vel = body->GetAngularVelocity();
+  b2Body& body = mObj->mBody;
+  float vel = body.GetAngularVelocity();
   float force = mTurnThrust * (1 - (fabs(vel) / PI));
-  body->ApplyTorque(dir * force);
+  body.ApplyTorque(dir * force);
 }
 
 void ShipMovement::stopTurn() {
-  b2Body* body = mObj->mBody;
-  float vel = body->GetAngularVelocity();
+  b2Body& body = mObj->mBody;
+  float vel = body.GetAngularVelocity();
   if (fabs(vel) < 0.05) {
-    body->SetAngularVelocity(0);
+    body.SetAngularVelocity(0);
     return;
   }
 
-  body->SetAngularVelocity(vel * 0.9);
+  body.SetAngularVelocity(vel * 0.9);
   return;
 }
 
 
 void ShipMovement::brake() {
-  b2Body* body = mObj->mBody;
-  b2Vec2 vel = body->GetLinearVelocity();
+  b2Body& body = mObj->mBody;
+  b2Vec2 vel = body.GetLinearVelocity();
   if (!vel.Length()) return;
 
-  float angle = body->GetAngle();
+  float angle = body.GetAngle();
   float wantAngle = vec2rad(-vel);
   float diff = wantAngle - angle;
 
@@ -87,18 +87,18 @@ void ShipMovement::brake() {
   while (diff < -PI) diff += TWOPI;
 
   if (fabs(diff) < 0.01) {
-    body->SetAngularVelocity(0);
-    body->SetTransform(body->GetPosition(), wantAngle);
+    body.SetAngularVelocity(0);
+    body.SetTransform(body.GetPosition(), wantAngle);
     thrust();
 
-    b2Vec2 newVel = body->GetLinearVelocity();
+    b2Vec2 newVel = body.GetLinearVelocity();
     float component = b2Dot(newVel, vel);
-    if (component < 0) body->SetLinearVelocity(b2Vec2(0, 0));
+    if (component < 0) body.SetLinearVelocity(b2Vec2(0, 0));
     return;
   }
 
-  float mod = sqrt(fabs(diff)) * (500 / body->GetMass());
+  float mod = sqrt(fabs(diff)) * (500 / body.GetMass());
   if (diff < 0) mod = -mod;
 
-  body->SetAngularVelocity(mod);
+  body.SetAngularVelocity(mod);
 }

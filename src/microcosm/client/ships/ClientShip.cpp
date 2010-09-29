@@ -6,22 +6,21 @@
 
 using namespace Microcosm::Ships;
 
-ClientShip::ClientShip(b2World* world, b2Vec2 position, float angle) {
-  mShip = new Ship(world, position, angle);
+ClientShip::ClientShip(Ship& ship) 
+  : mShip(ship) {
 }
 
 ClientShip::~ClientShip() {
-  delete mShip;
 }
 
 
 float ClientShip::getSpeed() {
-  return mShip->mBody->GetLinearVelocity().Length();
+  return mShip.getBody().GetLinearVelocity().Length();
 }
 
 void ClientShip::render() {
-  b2Vec2 position = mShip->mBody->GetPosition();
-  float angle = mShip->mBody->GetAngle();
+  b2Vec2 position = mShip.getBody().GetPosition();
+  float angle = mShip.getBody().GetAngle();
 
   glLoadIdentity();
   glTranslatef(position.x, position.y, 0);
@@ -29,7 +28,7 @@ void ClientShip::render() {
 
   glBegin(GL_QUADS);
 
-  if (mShip->mEngineOn) glColor3f(1.0, 0.0, 0.0);
+  if (mShip.mEngineOn) glColor3f(1.0, 0.0, 0.0);
 
   glVertex3f(-10.f, -10.f, 0);
   glVertex3f(-10.f,  10.f, 0);
@@ -43,7 +42,7 @@ void ClientShip::render() {
 }
     
 void ClientShip::handleInput(const sf::Input& Input) {
-  ShipMovement* movement = mShip->mMovement;
+  ShipMovement* movement = mShip.mMovement;
   movement->setState(SHIP_THRUST,     Input.IsKeyDown(sf::Key::Up));
   movement->setState(SHIP_BRAKE,      Input.IsKeyDown(sf::Key::Down));
   movement->setState(SHIP_TURN_LEFT,  Input.IsKeyDown(sf::Key::Left));    

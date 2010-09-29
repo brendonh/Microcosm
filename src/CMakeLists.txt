@@ -52,7 +52,7 @@ include_directories(${Microcosm_SOURCE_DIR})
 set(CMAKE_INSTALL_PREFIX "dist")
 
 set(CMAKE_CXX_COMPILER c++)
-add_definitions(-std=c++0x -Wall -Wextra -pedantic -Werror -Winline)
+add_definitions(-std=c++0x -Wall -Wextra -pedantic -Winline)
 
 add_subdirectory("microcosm/common")
 add_subdirectory("microcosm/client")

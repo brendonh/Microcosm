@@ -3,7 +3,11 @@
 #include <signal.h>
 #include <functional>
 
+#include "reckoner/common/ENetEndpoint.hpp"
 #include "reckoner/server/Server.hpp"
+
+#include "microcosm/common/ships/Ship.hpp"
+
 
 Reckoner::Server::Server server;
 
@@ -18,29 +22,52 @@ void startShutdown(int UNUSED(param)) {
   signal(SIGINT, forceShutdown);
 }
 
-void handleLogin(const google::protobuf::MessageLite& message) {
-  const Reckoner::ProtoBufs::Login* login = static_cast<const Reckoner::ProtoBufs::Login*>(&message);
-  std::cout << "Yo yo whattup: " << login->name() << std::endl;
-}
-
 
 class TestClient {
 public:
   
+  Reckoner::Network::ENetEndpoint& mClient;
   std::string mName;
+  std::string mIdentifier;
 
-  TestClient(std::string name) : mName(name) {}
+  TestClient(Reckoner::Network::ENetEndpoint& client,
+             std::string name) : 
+    mClient(client),
+    mName(name),
+    mIdentifier(client.getIdentifier() + " [" + name + "]") {
+    LOG("Logged in");
 
-  void memHandleLogin(const google::protobuf::MessageLite& message) {
-    const Reckoner::ProtoBufs::Login* login = static_cast<const Reckoner::ProtoBufs::Login*>(&message);
-    std::cout << mName << ": " << login->name() << std::endl;
+#define ATTACH(MSG, METHOD) \
+    client.registerHandler(MSG, \
+      std::bind(&TestClient::METHOD, *this,  \
+                std::placeholders::_1, \
+                std::placeholders::_2))
+
+    ATTACH("Reckoner.ProtoBufs.Login", repeatedLogin);
+
+#undef attach
+
+    Reckoner::ProtoBufs::LoggedIn msg;
+    client.send(&msg, ENET_PACKET_FLAG_RELIABLE);
   }
 
-  void foo() {
-
+  void repeatedLogin(Reckoner::Network::ENetEndpoint& UNUSED(endpoint), 
+                     const google::protobuf::MessageLite& UNUSED(message)) {
+    LOG("HAHA NICE TRY");
   }
 
 };
+
+
+void handleLogin(Reckoner::Network::ENetEndpoint& endpoint, 
+                 const google::protobuf::MessageLite& message) {
+
+  const Reckoner::ProtoBufs::Login* login = 
+    static_cast<const Reckoner::ProtoBufs::Login*>(&message);
+
+  TestClient* tc = new TestClient(endpoint, login->name());
+}
+
 
 int main() {
   signal (SIGINT, startShutdown);
@@ -50,9 +77,14 @@ int main() {
     return 1;
   }
 
+  using namespace Microcosm::Ships;
+
+  Ship* ship1 = new Ship(0, server.mRegion.mWorld, b2Vec2(0.f, 0.f), PI / 2);
+  Ship* ship2 = new Ship(1, server.mRegion.mWorld, b2Vec2(-18, 50), 0.f);
+
   Reckoner::Network::ENetEndpoint::dumpMessageMap();
 
-  Reckoner::Network::ENetEndpoint::registerHandler("Reckoner.ProtoBufs.Login", handleLogin);
+  Reckoner::Network::ENetEndpoint::registerStaticHandler("Reckoner.ProtoBufs.Login", handleLogin);
 
   //TestClient tc("Testy");
   // Reckoner::Network::ENetEndpoint::registerHandler("Reckoner.ProtoBufs.Login", 

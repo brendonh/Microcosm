@@ -1,4 +1,5 @@
 #include<stdio.h>
+#include <iostream>
 
 #include <GL/gl.h>
 #include <GL/glu.h>
@@ -10,11 +11,15 @@
 using namespace Microcosm;
 
 
-Game::Game(bool f)
-  : fullscreen(f),
-    window(NULL), clock(NULL),
-    speed(NULL), world(NULL),
-    pb(NULL), stat(NULL) { 
+Game::Game(bool full)
+  : fullscreen(full),
+    window(NULL), 
+    clock(NULL),
+    speed(NULL),
+    mWorld(b2World(b2Vec2(0.f, 0.f), true)),
+    pb(NULL), 
+    stat(NULL) { 
+
   timeStep = 1.0f / 60.0f;
   unrenderedTime = 0;
   init();
@@ -38,7 +43,7 @@ void Game::mainloop() {
 
     while(unrenderedTime > timeStep) {
       pb->tick();
-      world->Step(timeStep, 10, 10);
+      mWorld.Step(timeStep, 10, 10);
       unrenderedTime -= timeStep;
     }
 
@@ -56,7 +61,6 @@ void Game::initSFML() {
   }
 
   window->UseVerticalSync(true);
-  window->SetFramerateLimit(60);
   window->PreserveOpenGLStates(true);
 
   clock = new sf::Clock();
@@ -83,12 +87,11 @@ void Game::initOpenGL() {
 }
 
 void Game::initBox2D() {
-  b2Vec2 gravity(0.0f, 0.0f);
-  world = new b2World(gravity, true);
+  Ships::Ship* ship1 = new Ships::Ship(0, mWorld, b2Vec2(0, 0), PI / 2);
+  pb = new Ships::ClientShip(*ship1);
 
-  pb = new Ships::ClientShip(world, b2Vec2(0, 0), PI / 2);
-
-  stat = new Ships::ClientShip(world, b2Vec2(-18, 50), 0.f);
+  Ships::Ship* ship2 = new Ships::Ship(1, mWorld, b2Vec2(-18, 50), 0.f);
+  stat = new Ships::ClientShip(*ship2);
 }
 
 

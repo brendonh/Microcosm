@@ -17,13 +17,23 @@ namespace Microcosm {
     class Ship : public Reckoner::Framework::WorldObject {
     public:
 
-      Ship(b2World* world, b2Vec2 position, float angle);
-      ~Ship();
+      Ship(uuid_t uuid, b2World& world, b2Vec2 position, float angle);
+      virtual ~Ship();
 
       ShipMovement* mMovement;
       bool mEngineOn;
 
+      const b2Body& getBody() { return mBody; }
+
     private:
+
+      friend class ShipMovement;
+
+      static b2Body& createBody(b2World& world, 
+                                b2Vec2 position, 
+                                float angle);
+
+
     };
 
   }
