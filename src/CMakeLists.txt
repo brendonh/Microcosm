@@ -15,16 +15,24 @@ set(RECKONER_BASE_DIR "${CMAKE_BINARY_DIR}/../../reckoner")
 set(RECKONER_PROTO_DIR "${RECKONER_BASE_DIR}/src/reckoner/proto")
 set(RECKONER_PROTO_BIN_DIR "${RECKONER_BASE_DIR}/build/reckoner/proto")
 set(CMAKE_MODULE_PATH "${RECKONER_BASE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
+
 include_directories("${RECKONER_BASE_DIR}/src")
 include_directories("${RECKONER_BASE_DIR}/build")
+
 link_directories("${RECKONER_BASE_DIR}/build/reckoner/common")
 link_directories("${RECKONER_BASE_DIR}/build/reckoner/server")
+link_directories("${RECKONER_BASE_DIR}/build/reckoner/client")
+
+# Ensure we re-link when these change
 add_library(reckoner-common STATIC IMPORTED)
 set_property(TARGET reckoner-common PROPERTY
   IMPORTED_LOCATION "${RECKONER_BASE_DIR}/build/reckoner/common/libreckoner-common.a")
 add_library(reckoner-server STATIC IMPORTED)
 set_property(TARGET reckoner-server PROPERTY
   IMPORTED_LOCATION "${RECKONER_BASE_DIR}/build/reckoner/server/libreckoner-server.a")
+add_library(reckoner-client STATIC IMPORTED)
+set_property(TARGET reckoner-client PROPERTY
+  IMPORTED_LOCATION "${RECKONER_BASE_DIR}/build/reckoner/client/libreckoner-client.a")
 
 
 include(MacroOutOfSourceBuild)

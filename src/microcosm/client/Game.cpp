@@ -33,23 +33,24 @@ void Game::init() {
   initBox2D();
 }
 
-void Game::mainloop() {
-  while (window->IsOpened()) {
+bool Game::tick() {
+  if (!window->IsOpened()) return false;
 
-    unrenderedTime += clock->GetElapsedTime();
-    clock->Reset();
+  unrenderedTime += clock->GetElapsedTime();
+  clock->Reset();
 
-    handleEvents();
+  handleEvents();
 
-    while(unrenderedTime > timeStep) {
-      pb->tick();
-      mWorld.Step(timeStep, 10, 10);
-      unrenderedTime -= timeStep;
-    }
-
-    renderTo(window);
-    window->Display();
+  while(unrenderedTime > timeStep) {
+    pb->tick();
+    mWorld.Step(timeStep, 10, 10);
+    unrenderedTime -= timeStep;
   }
+
+  renderTo(window);
+  window->Display();
+
+  return true;
 }
 
 void Game::initSFML() {

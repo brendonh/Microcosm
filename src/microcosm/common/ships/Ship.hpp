@@ -33,7 +33,6 @@ namespace Microcosm {
                                 b2Vec2 position, 
                                 float angle);
 
-
     };
 
   }

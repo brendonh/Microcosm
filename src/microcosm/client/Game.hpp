@@ -15,7 +15,7 @@ namespace Microcosm {
     Game(bool fullscreen);
     ~Game();
 
-    void mainloop();
+    bool tick();
     void screenshot();
 
     float timeStep;

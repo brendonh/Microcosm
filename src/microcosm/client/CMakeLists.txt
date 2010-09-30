@@ -8,7 +8,7 @@ set(LIBS ${LIBS} ${SFML_LIBRARY})
 
 set(LIBS ${LIBS} GLU)
 
-set(LIBS ${LIBS} microcosm-common)
+set(LIBS ${LIBS} microcosm-common reckoner-client)
 
 file(GLOB_RECURSE MicrocosmClient_SOURCES "${MicrocosmClient_SOURCE_DIR}/*.cpp")
 
