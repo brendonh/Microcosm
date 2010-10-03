@@ -45,12 +45,12 @@ namespace Microcosm {
     private:
 
       float mMainThrust;
-      float mTurnThrust;
+      float mTurnSpeed;
       float mMaxSpeed;
 
       void thrust();
       void turn(int dir);
-      void stopTurn();
+      //void stopTurn();
       void brake();
 
     };

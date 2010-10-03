@@ -1,0 +1,8 @@
+package Microcosm.ProtoBufs;
+
+import "reckoner/proto/region.proto";
+
+message Ship {
+  required Reckoner.ProtoBufs.WorldObject object = 1;
+  optional string name = 2;
+}

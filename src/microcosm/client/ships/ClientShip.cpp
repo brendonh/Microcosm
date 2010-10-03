@@ -1,8 +1,8 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
+#include "reckoner/common/Reckoner.hpp"
 #include "./ClientShip.hpp"
-#include "../Microcosm.hpp"
 
 using namespace Microcosm::Ships;
 
@@ -15,15 +15,15 @@ ClientShip::~ClientShip() {
 
 
 float ClientShip::getSpeed() {
-  return mShip.getBody().GetLinearVelocity().Length();
+  return length(mShip.mPos.velocity) * 10;
 }
 
 void ClientShip::render() {
-  b2Vec2 position = mShip.getBody().GetPosition();
-  float angle = mShip.getBody().GetAngle();
+  Vector3 position = mShip.mPos.position;
+  float angle = mShip.mPos.rotation;
 
   glLoadIdentity();
-  glTranslatef(position.x, position.y, 0);
+  glTranslatef(position.getX(), position.getY(), 0);
   glRotatef(angle * RAD2DEG, 0, 0, 1);
 
   glBegin(GL_QUADS);

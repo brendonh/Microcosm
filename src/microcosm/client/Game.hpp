@@ -3,8 +3,6 @@
 
 #include <SFML/Graphics.hpp>
 
-#include <Box2D/Box2D.h>
-
 #include "ships/ClientShip.hpp"
 
 namespace Microcosm {
@@ -31,8 +29,6 @@ namespace Microcosm {
 
     sf::String* speed;
 
-    b2World mWorld;
-
     Ships::ClientShip* pb;
     Ships::ClientShip* stat;
 
@@ -40,7 +36,7 @@ namespace Microcosm {
 
     void initOpenGL();
     void initSFML();
-    void initBox2D();
+    void initWorld();
 
     void handleEvents();
 

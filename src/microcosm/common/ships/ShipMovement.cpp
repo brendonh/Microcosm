@@ -1,7 +1,4 @@
-#include <Box2D/Box2D.h>
-
 #include "reckoner/common/Reckoner.hpp"
-#include "reckoner/common/B2Util.hpp"
 #include "./ShipMovement.hpp"
 #include "./Ship.hpp"
 
@@ -9,9 +6,9 @@ using namespace Microcosm::Ships;
 
 ShipMovement::ShipMovement(Ship* obj) 
   : mObj(obj), mState(0),
-    mMainThrust(200.0f),
-    mTurnThrust(100000.0f),
-    mMaxSpeed(80) {}
+    mMainThrust(0.01f),
+    mTurnSpeed(0.05f),
+    mMaxSpeed(1.0f) {}
 
 void ShipMovement::tick() {
   mObj->mEngineOn = false;
@@ -21,84 +18,74 @@ void ShipMovement::tick() {
   
   int dir = getState(SHIP_TURN_LEFT) - getState(SHIP_TURN_RIGHT);
   if (dir) turn(dir);
-  else stopTurn();
+
+  PVR& pos = mObj->mPos;
+  pos.position += pos.velocity;
 }
 
 
 void ShipMovement::thrust() {
   mObj->mEngineOn = true;
-  b2Body& body = mObj->mBody;
 
-  b2Vec2 force = rad2vec(body.GetAngle());
-  force *= mMainThrust / body.GetMass();
-  b2Vec2 vel = body.GetLinearVelocity();
+  PVR& pos = mObj->mPos;
+  Vector3 forceVec = rad2vec(pos.rotation) * mMainThrust;
+  Vector3 vel = pos.velocity;
 
-  b2Vec2 newVel = vel + force;
+  Vector3 newVel = vel + forceVec;
 
-  if (newVel.Length() > vel.Length()) {
-    float b = 1 - vel.LengthSquared() / (mMaxSpeed*mMaxSpeed);
+  if (lengthSqr(newVel) > lengthSqr(vel)) {
+    float b = 1 - lengthSqr(vel) / (mMaxSpeed*mMaxSpeed);
     if (b <= 0) b = 0;
 
     double lorentz_factor_reciprocal = sqrt(b);
-    force *= lorentz_factor_reciprocal;
+    forceVec *= lorentz_factor_reciprocal;
   }
 
-  vel += force;
+  vel += forceVec;
 
-  if (vel.Length() > 0) {
-    newVel.Normalize();
-    newVel *= vel.Length();
+  if (lengthSqr(vel) > 0) {
+    newVel = normalize(newVel);
+    newVel *= length(vel);
     vel = newVel;
   }
 
-  body.SetLinearVelocity(vel);
+  pos.velocity = vel;
 }
+
 
 void ShipMovement::turn(int dir) {
-  b2Body& body = mObj->mBody;
-  float vel = body.GetAngularVelocity();
-  float force = mTurnThrust * (1 - (fabs(vel) / PI));
-  body.ApplyTorque(dir * force);
-}
-
-void ShipMovement::stopTurn() {
-  b2Body& body = mObj->mBody;
-  float vel = body.GetAngularVelocity();
-  if (fabs(vel) < 0.05) {
-    body.SetAngularVelocity(0);
-    return;
-  }
-
-  body.SetAngularVelocity(vel * 0.9);
-  return;
+  PVR& pos = mObj->mPos;
+  pos.rotation += mTurnSpeed * dir;
 }
 
 
 void ShipMovement::brake() {
-  b2Body& body = mObj->mBody;
-  b2Vec2 vel = body.GetLinearVelocity();
-  if (!vel.Length()) return;
+  PVR& pos = mObj->mPos;
+  
+  Vector3 vel = Vector3(pos.velocity);
 
-  float angle = body.GetAngle();
+  if (!length(vel)) return;
+
+  float angle = pos.rotation;
   float wantAngle = vec2rad(-vel);
   float diff = wantAngle - angle;
 
   if (diff > PI) diff -= TWOPI;
   while (diff < -PI) diff += TWOPI;
 
-  if (fabs(diff) < 0.01) {
-    body.SetAngularVelocity(0);
-    body.SetTransform(body.GetPosition(), wantAngle);
+  if (fabs(diff) < mTurnSpeed) {
+    pos.rotation = wantAngle;
     thrust();
 
-    b2Vec2 newVel = body.GetLinearVelocity();
-    float component = b2Dot(newVel, vel);
-    if (component < 0) body.SetLinearVelocity(b2Vec2(0, 0));
+    Vector3& newVel = pos.velocity;
+
+    if (dot(newVel, vel) <= 0) {
+      newVel.setX(0);
+      newVel.setY(0);
+    }
+
     return;
   }
 
-  float mod = sqrt(fabs(diff)) * (500 / body.GetMass());
-  if (diff < 0) mod = -mod;
-
-  body.SetAngularVelocity(mod);
+  turn(diff < 0 ? -1 : 1);
 }

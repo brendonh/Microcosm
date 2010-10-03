@@ -9,5 +9,5 @@ add_definitions(-Wall -Wextra -pedantic -Werror)
 set(LIBS ${LIBS} reckoner-common)
 
 add_library(microcosm-common ${MicrocosmCommon_SOURCES})
-add_dependencies(microcosm-common reckoner-common reckoner-server)
+add_dependencies(microcosm-common reckoner-common reckoner-server microcosm-proto)
 target_link_libraries(microcosm-common ${LIBS})

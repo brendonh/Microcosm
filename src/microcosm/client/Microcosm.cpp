@@ -56,7 +56,8 @@ int main(int argc, char** argv) {
     return EXIT_FAILURE;
   }
 
-  Reckoner::Network::ENetEndpoint::registerStaticHandler("Reckoner.ProtoBufs.LoggedIn", handleLoggedIn);
+  Reckoner::Network::ENetEndpoint::registerStaticHandler("Reckoner.ProtoBufs.LoggedIn", 
+                                                         handleLoggedIn);
 
   while (running) {
     if (_shutdown) {

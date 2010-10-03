@@ -4,7 +4,9 @@
 #include <GL/gl.h>
 #include <GL/glu.h>
 
-#include "Microcosm.hpp"
+#include "reckoner/common/Reckoner.hpp"
+#include "reckoner/common/framework/Math2D.hpp"
+
 #include "Game.hpp"
 
 
@@ -16,11 +18,11 @@ Game::Game(bool full)
     window(NULL), 
     clock(NULL),
     speed(NULL),
-    mWorld(b2World(b2Vec2(0.f, 0.f), true)),
     pb(NULL), 
     stat(NULL) { 
 
-  timeStep = 1.0f / 60.0f;
+  // XXX TODO: Use own clock here instead
+  timeStep = TIMESTEP / 1000.f;
   unrenderedTime = 0;
   init();
 }
@@ -30,7 +32,7 @@ Game::~Game() {}
 void Game::init() {
   initSFML();
   initOpenGL();
-  initBox2D();
+  initWorld();
 }
 
 bool Game::tick() {
@@ -43,7 +45,7 @@ bool Game::tick() {
 
   while(unrenderedTime > timeStep) {
     pb->tick();
-    mWorld.Step(timeStep, 10, 10);
+    stat->tick();
     unrenderedTime -= timeStep;
   }
 
@@ -56,9 +58,9 @@ bool Game::tick() {
 void Game::initSFML() {
   if (fullscreen) {
     sf::VideoMode vm = sf::VideoMode::GetDesktopMode();
-    window = new sf::RenderWindow(vm, "Box2D Sandbox", sf::Style::None);
+    window = new sf::RenderWindow(vm, "Microcosm", sf::Style::None);
   } else {
-    window = new sf::RenderWindow(sf::VideoMode(800, 600, 32), "Box2D Sandbox");
+    window = new sf::RenderWindow(sf::VideoMode(800, 600, 32), "Microcosm");
   }
 
   window->UseVerticalSync(true);
@@ -87,11 +89,18 @@ void Game::initOpenGL() {
   glMatrixMode(GL_MODELVIEW);
 }
 
-void Game::initBox2D() {
-  Ships::Ship* ship1 = new Ships::Ship(0, mWorld, b2Vec2(0, 0), PI / 2);
+void Game::initWorld() {
+
+  using namespace Reckoner::Framework;
+
+  Ships::Ship* ship1 = new Ships::Ship(0, PVR(Vector3(0,0,0), 
+                                              Vector3(0,0,0),
+                                              PI / 2));
   pb = new Ships::ClientShip(*ship1);
 
-  Ships::Ship* ship2 = new Ships::Ship(1, mWorld, b2Vec2(-18, 50), 0.f);
+  Ships::Ship* ship2 = new Ships::Ship(1, PVR(Vector3(-18, 50, 0),
+                                              Vector3(0.2f,0,0),
+                                              0.f));
   stat = new Ships::ClientShip(*ship2);
 }
 

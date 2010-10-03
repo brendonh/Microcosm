@@ -44,14 +44,19 @@ int main() {
 
   using namespace Microcosm::Ships;
 
-  server.mRegion.addObject(new Ship(0, server.mRegion.mWorld, b2Vec2(0.f, 0.f), PI / 2));
-  server.mRegion.addObject(new Ship(1, server.mRegion.mWorld, b2Vec2(-18, 50), 0.f));
+  server.mRegion.addObject(new Ship(0, PVR(Vector3(0,0,0),
+                                           Vector3(0,0,0),
+                                           PI / 2)));
+
+  server.mRegion.addObject(new Ship(1, PVR(Vector3(-18, 50, 0),
+                                           Vector3(0,0,0),
+                                           0.f)));
 
   using namespace Reckoner::Network;
 
-  ENetEndpoint::dumpMessageMap();
-
   ENetEndpoint::registerStaticHandler("Reckoner.ProtoBufs.Login", handleLogin);
+
+  MessageMap::dumpMessageMap();
 
   server.run();
 

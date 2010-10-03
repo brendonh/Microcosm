@@ -12,7 +12,7 @@ set(CMAKE_MODULE_PATH "${Microcosm_SOURCE_DIR}/../cmake/modules" ${CMAKE_MODULE_
 
 # For now
 set(RECKONER_BASE_DIR "${CMAKE_BINARY_DIR}/../../reckoner")
-set(RECKONER_PROTO_DIR "${RECKONER_BASE_DIR}/src/reckoner/proto")
+set(RECKONER_PROTO_DIR "${RECKONER_BASE_DIR}/src")
 set(RECKONER_PROTO_BIN_DIR "${RECKONER_BASE_DIR}/build/reckoner/proto")
 set(CMAKE_MODULE_PATH "${RECKONER_BASE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
 
@@ -47,11 +47,8 @@ find_package(ENet REQUIRED)
 include_directories(${ENet_INCLUDE_DIR})
 set(LIBS ${LIBS} enet)
 
-find_package(Box2D REQUIRED)
-include_directories(${Box2D_INCLUDE_DIRS})
-set(LIBS ${LIBS} Box2D)
-
 find_package(Protobuf REQUIRED)
+add_subdirectory("microcosm/proto")
 include_directories(${PROTOBUF_INCLUDE_DIRS} ${CMAKE_BINARY_DIR})
 set(LIBS ${LIBS} pthread ${PROTOBUF_LIBRARY})
 
@@ -60,7 +57,7 @@ include_directories(${Microcosm_SOURCE_DIR})
 set(CMAKE_INSTALL_PREFIX "dist")
 
 set(CMAKE_CXX_COMPILER c++)
-add_definitions(-std=c++0x -Wall -Wextra -pedantic -Winline)
+add_definitions(-std=c++0x -Wall -Wextra -pedantic -Winline -U__SSE__)
 
 add_subdirectory("microcosm/common")
 add_subdirectory("microcosm/client")
