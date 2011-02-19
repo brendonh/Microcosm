@@ -11,7 +11,7 @@ set(CMAKE_MODULE_PATH "${Microcosm_SOURCE_DIR}/../cmake/modules" ${CMAKE_MODULE_
 # link_directories("${RECKONER_DIR}/lib")
 
 # For now
-set(RECKONER_BASE_DIR "${CMAKE_BINARY_DIR}/../../reckoner")
+set(RECKONER_BASE_DIR "${CMAKE_BINARY_DIR}/../../../reckoner/space")
 set(RECKONER_PROTO_DIR "${RECKONER_BASE_DIR}/src")
 set(RECKONER_PROTO_BIN_DIR "${RECKONER_BASE_DIR}/build/reckoner/proto")
 set(CMAKE_MODULE_PATH "${RECKONER_BASE_DIR}/cmake/modules" ${CMAKE_MODULE_PATH})
