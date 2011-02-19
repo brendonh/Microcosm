@@ -5,7 +5,6 @@
 
 #include "reckoner/server/Server.hpp"
 
-#include "microcosm/common/ships/Ship.hpp"
 #include "ClientEndpoint.hpp"
 
 using namespace Microcosm::Server;
@@ -35,6 +34,7 @@ void handleLogin(Reckoner::Network::ENetEndpoint& endpoint,
 
 
 int main() {
+
   signal (SIGINT, startShutdown);
 
   if (!Reckoner::Server::initialize()) {
@@ -42,15 +42,18 @@ int main() {
     return 1;
   }
 
-  using namespace Microcosm::Ships;
+  using namespace Reckoner::Framework;
 
-  server.mRegion.addObject(new Ship(0, PVR(Vector3(0,0,0),
-                                           Vector3(0,0,0),
-                                           PI / 2)));
+  WorldObject ship1(0, PVR(Vector3(0,0,0),
+                           Vector3(0,0,0),
+                           PI / 2));
 
-  server.mRegion.addObject(new Ship(1, PVR(Vector3(-18, 50, 0),
-                                           Vector3(0,0,0),
-                                           0.f)));
+  WorldObject ship2(1, PVR(Vector3(-18, 50, 0),
+                           Vector3(0,0,0),
+                           0.f));
+
+  server.addObject(ship1);
+  server.addObject(ship2);
 
   using namespace Reckoner::Network;
 

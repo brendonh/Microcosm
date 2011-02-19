@@ -1,33 +1,40 @@
 #include "reckoner/common/Reckoner.hpp"
-#include "./ShipMovement.hpp"
-#include "./Ship.hpp"
+#include "ShipMovement.hpp"
+#include "ShipState.hpp"
 
 using namespace Microcosm::Ships;
+using namespace Reckoner::Framework;
 
-ShipMovement::ShipMovement(Ship* obj) 
-  : mObj(obj), mState(0),
+ShipMovement::ShipMovement(WorldObject& obj) 
+  : Reckoner::Framework::Component(obj, "movement"),
     mMainThrust(0.01f),
     mTurnSpeed(0.05f),
     mMaxSpeed(1.0f) {}
 
-void ShipMovement::tick() {
-  mObj->mEngineOn = false;
 
-  if (getState(SHIP_THRUST)) thrust();
-  else if (getState(SHIP_BRAKE)) brake();
+void ShipMovement::tick() {
+  //mObj.mEngineOn = false;
+
+  // XXX TODO: Use the cache
+  ShipState& state = static_cast<ShipState&>(mObj.getComponent("state"));
+
+  if (state.getState(ShipState::THRUST)) thrust();
+  else if (state.getState(ShipState::BRAKE)) brake();
   
-  int dir = getState(SHIP_TURN_LEFT) - getState(SHIP_TURN_RIGHT);
+  int dir = state.getState(ShipState::TURN_LEFT) 
+          - state.getState(ShipState::TURN_RIGHT);
+
   if (dir) turn(dir);
 
-  PVR& pos = mObj->mPos;
+  PVR& pos = mObj.mPos;
   pos.position += pos.velocity;
 }
 
 
 void ShipMovement::thrust() {
-  mObj->mEngineOn = true;
+  //mObj.mEngineOn = true;
 
-  PVR& pos = mObj->mPos;
+  PVR& pos = mObj.mPos;
   Vector3 forceVec = rad2vec(pos.rotation) * mMainThrust;
   Vector3 vel = pos.velocity;
 
@@ -54,13 +61,13 @@ void ShipMovement::thrust() {
 
 
 void ShipMovement::turn(int dir) {
-  PVR& pos = mObj->mPos;
+  PVR& pos = mObj.mPos;
   pos.rotation += mTurnSpeed * dir;
 }
 
 
 void ShipMovement::brake() {
-  PVR& pos = mObj->mPos;
+  PVR& pos = mObj.mPos;
   
   Vector3 vel = Vector3(pos.velocity);
 

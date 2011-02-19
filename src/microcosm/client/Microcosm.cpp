@@ -81,6 +81,8 @@ int main(int argc, char** argv) {
     conn->service(500);
   }
 
+  delete game;
+
   atexit(enet_deinitialize);
 
   return EXIT_SUCCESS;

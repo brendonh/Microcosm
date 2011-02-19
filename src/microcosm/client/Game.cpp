@@ -7,8 +7,13 @@
 #include "reckoner/common/Reckoner.hpp"
 #include "reckoner/common/framework/Math2D.hpp"
 
-#include "Game.hpp"
+#include "microcosm/common/ships/ShipState.hpp"
+#include "microcosm/common/ships/ShipMovement.hpp"
 
+
+#include "ships/ShipInput.hpp"
+#include "ships/ShipRenderer.hpp"
+#include "Game.hpp"
 
 using namespace Microcosm;
 
@@ -27,7 +32,10 @@ Game::Game(bool full)
   init();
 }
 
-Game::~Game() {}
+Game::~Game() {
+  delete pb;
+  delete stat;
+}
 
 void Game::init() {
   initSFML();
@@ -92,16 +100,38 @@ void Game::initOpenGL() {
 void Game::initWorld() {
 
   using namespace Reckoner::Framework;
+  using namespace Microcosm::Ships;
 
-  Ships::Ship* ship1 = new Ships::Ship(0, PVR(Vector3(0,0,0), 
-                                              Vector3(0,0,0),
-                                              PI / 2));
-  pb = new Ships::ClientShip(*ship1);
+  pb = new WorldObject(0, PVR(Vector3(0,0,0), 
+                              Vector3(0,0,0),
+                              PI / 2));
 
-  Ships::Ship* ship2 = new Ships::Ship(1, PVR(Vector3(-18, 50, 0),
-                                              Vector3(0.2f,0,0),
-                                              0.f));
-  stat = new Ships::ClientShip(*ship2);
+  ShipInput* input = new ShipInput(*pb);
+  pb->addComponent(*input);
+
+  ShipState* state = new ShipState(*pb);
+  pb->addComponent(*state);
+
+  ShipRenderer* renderer = new ShipRenderer(*pb);
+  pb->addComponent(*renderer);
+
+  ShipMovement* movement = new ShipMovement(*pb);
+  pb->addComponent(*movement);
+
+  stat = new WorldObject(1, PVR(Vector3(-18, 50, 0),
+                                Vector3(0.2f,0,0),
+                                0.f));
+
+  state = new ShipState(*stat);
+  stat->addComponent(*state);
+
+  renderer = new ShipRenderer(*stat);
+  stat->addComponent(*renderer);
+
+  movement = new ShipMovement(*stat);
+  stat->addComponent(*movement);
+
+
 }
 
 
@@ -127,7 +157,10 @@ void Game::handleEvents() {
   }
 
   const sf::Input& Input = window->GetInput();
-  pb->handleInput(Input);
+
+  using Microcosm::Ships::ShipInput;
+  ShipInput& si = static_cast<ShipInput&>(pb->getComponent("input"));
+  si.handleInput(Input);
   
 }
 
@@ -135,15 +168,19 @@ void Game::renderTo(sf::RenderTarget *target) {
   glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 
   char msg[50];
-  sprintf(msg, "Speed: %.0f", pb->getSpeed());
+
+  using Microcosm::Ships::ShipState;
+  ShipState& state = static_cast<ShipState&>(pb->getComponent("state"));
+  sprintf(msg, "Speed: %.0f", state.getSpeed());
 
   if (speed) {
     speed->SetText(msg);
     target->Draw(*speed);
   }
 
-  pb->render();
-  stat->render();
+  using Microcosm::Ships::ShipRenderer;
+  static_cast<ShipRenderer&>(pb->getComponent("renderer")).render();
+  static_cast<ShipRenderer&>(stat->getComponent("renderer")).render();
 }
 
 

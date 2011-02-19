@@ -17,7 +17,7 @@ ClientEndpoint::ClientEndpoint(Reckoner::Network::ENetEndpoint& client,
                                    std::placeholders::_2))
   
   ATTACH("Reckoner.ProtoBufs.Login", handle_repeatedLogin);
-  ATTACH("Reckoner.ProtoBufs.ControlObject", handle_controlObject);
+  //ATTACH("Reckoner.ProtoBufs.ControlObject", handle_controlObject);
 
 #undef ATTACH
 
@@ -32,12 +32,22 @@ void ClientEndpoint::handle_repeatedLogin(
   LOG("Ignoring repeated login");
 }
 
-void ClientEndpoint::handle_controlObject(
-        Reckoner::Network::ENetEndpoint& UNUSED(endpoint), 
-        const google::protobuf::MessageLite& message) {
 
-  const Reckoner::ProtoBufs::ControlObject* controlObj = 
-    static_cast<const Reckoner::ProtoBufs::ControlObject*>(&message);
+// // Temporary
+// #include "reckoner/server/Server.hpp"
+// #include "reckoner/server/Client.hpp"
+// extern Reckoner::Server::Server server;
 
-  LOG("Controlling ID " << controlObj->objectid());
-}
+
+// void ClientEndpoint::handle_controlObject(
+//         Reckoner::Network::ENetEndpoint& UNUSED(endpoint), 
+//         const google::protobuf::MessageLite& message) {
+
+//   const Reckoner::ProtoBufs::ControlObject* controlObj = 
+//     static_cast<const Reckoner::ProtoBufs::ControlObject*>(&message);
+
+//   LOG("Controlling ID " << controlObj->objectid());
+  
+//   Reckoner::Server::Client* client = static_cast<Reckoner::Server::Client*>(mClient.peerData());
+//   server.mRegion.addWatcher(controlObj->objectid(), client->mClientID);
+// }

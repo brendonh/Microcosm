@@ -3,7 +3,7 @@
 
 #include <SFML/Graphics.hpp>
 
-#include "ships/ClientShip.hpp"
+#include "reckoner/common/framework/WorldObject.hpp"
 
 namespace Microcosm {
 
@@ -29,8 +29,8 @@ namespace Microcosm {
 
     sf::String* speed;
 
-    Ships::ClientShip* pb;
-    Ships::ClientShip* stat;
+    Reckoner::Framework::WorldObject* pb;
+    Reckoner::Framework::WorldObject* stat;
 
     void init();
 
